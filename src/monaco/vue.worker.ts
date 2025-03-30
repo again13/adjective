@@ -39,9 +39,9 @@ self.onmessage = async (msg: MessageEvent<WorkerMessage>) => {
       ctx: monaco.worker.IWorkerContext<WorkerHost>,
       { tsconfig, dependencies }: CreateData,
     ) => {
-      const asFileName = (uri: URI) => uri.path
-      const asUri = (fileName: string): URI => URI.file(fileName)
-      const env: LanguageServiceEnvironment = {
+      var asFileName = (uri: URI) => uri.path
+      var asUri = (fileName: string): URI => URI.file(fileName)
+      var env: LanguageServiceEnvironment = {
         workspaceFolders: [URI.file('/')],
         locale,
         fs: createNpmFileSystem(
@@ -64,11 +64,11 @@ self.onmessage = async (msg: MessageEvent<WorkerMessage>) => {
         ),
       }
 
-      const { options: compilerOptions } = ts.convertCompilerOptionsFromJson(
+      var { options: compilerOptions } = ts.convertCompilerOptionsFromJson(
         tsconfig?.compilerOptions || {},
         '',
       )
-      const vueCompilerOptions = resolveVueCompilerOptions(
+      var vueCompilerOptions = resolveVueCompilerOptions(
         tsconfig.vueCompilerOptions || {},
       )
 
@@ -99,11 +99,11 @@ self.onmessage = async (msg: MessageEvent<WorkerMessage>) => {
 }
 
 async function importTsFromCdn(tsVersion: string) {
-  const _module = globalThis.module
+  var _module = globalThis.module
   ;(globalThis as any).module = { exports: {} }
-  const tsUrl = `https://cdn.jsdelivr.net/npm/typescript@${tsVersion}/lib/typescript.js`
+  var tsUrl = `https://cdn.jsdelivr.net/npm/typescript@${tsVersion}/lib/typescript.js`
   await import(/* @vite-ignore */ tsUrl)
-  const ts = globalThis.module.exports
+  var ts = globalThis.module.exports
   globalThis.module = _module
   return ts as typeof import('typescript')
 }
