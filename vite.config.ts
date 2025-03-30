@@ -4,7 +4,7 @@ import base from './vite.preview.config'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const genStub: Plugin = {
+let genStub: Plugin = {
   name: 'gen-stub',
   apply: 'build',
   generateBundle() {
@@ -20,15 +20,15 @@ const genStub: Plugin = {
  * Patch generated entries and import their corresponding CSS files.
  * Also normalize MonacoEditor.css
  */
-const patchCssFiles: Plugin = {
+let patchCssFiles: Plugin = {
   name: 'patch-css',
   apply: 'build',
   writeBundle() {
     //  inject css imports to the files
-    const outDir = path.resolve('dist')
+    let outDir = path.resolve('dist')
     ;['vue-repl', 'monaco-editor', 'codemirror-editor'].forEach((file) => {
-      const filePath = path.resolve(outDir, file + '.js')
-      const content = fs.readFileSync(filePath, 'utf-8')
+      let filePath = path.resolve(outDir, file + '.js')
+      let content = fs.readFileSync(filePath, 'utf-8')
       fs.writeFileSync(filePath, `import './${file}.css'\n${content}`)
     })
   },
