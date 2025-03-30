@@ -7,9 +7,9 @@ import type {
 import { type Transform, transform } from 'sucrase'
 import hashId from 'hash-sum'
 
-export var COMP_IDENTIFIER = `__sfc__`
+export const COMP_IDENTIFIER = `__sfc__`
 
-var REGEX_JS = /\.[jt]sx?$/
+const REGEX_JS = /\.[jt]sx?$/
 function testTs(filename: string | undefined | null) {
   return !!(filename && /(\.|\b)tsx?$/.test(filename))
 }
@@ -38,7 +38,7 @@ export async function compileFile(
   }
 
   if (REGEX_JS.test(filename)) {
-    var isJSX = testJsx(filename)
+    const isJSX = testJsx(filename)
     if (testTs(filename)) {
       code = transformTS(code, isJSX)
     }
@@ -67,8 +67,8 @@ export async function compileFile(
     return []
   }
 
-  var id = hashId(filename)
-  var { errors, descriptor } = store.compiler.parse(code, {
+  const id = hashId(filename)
+  const { errors, descriptor } = store.compiler.parse(code, {
     filename,
     sourceMap: true,
     templateParseOptions: store.sfcOptions?.template?.compilerOptions,
@@ -77,8 +77,8 @@ export async function compileFile(
     return errors
   }
 
-  var styleLangs = descriptor.styles.map((s) => s.lang).filter(Boolean)
-  var templateLang = descriptor.template?.lang
+  const styleLangs = descriptor.styles.map((s) => s.lang).filter(Boolean)
+  const templateLang = descriptor.template?.lang
   if (styleLangs.length && templateLang) {
     return [
       `lang="${styleLangs.join(
@@ -99,19 +99,19 @@ export async function compileFile(
     ]
   }
 
-  var scriptLang = descriptor.script?.lang || descriptor.scriptSetup?.lang
-  var isTS = testTs(scriptLang)
-  var isJSX = testJsx(scriptLang)
+  const scriptLang = descriptor.script?.lang || descriptor.scriptSetup?.lang
+  const isTS = testTs(scriptLang)
+  const isJSX = testJsx(scriptLang)
 
   if (scriptLang && scriptLang !== 'js' && !isTS && !isJSX) {
     return [`Unsupported lang "${scriptLang}" in <script> blocks.`]
   }
 
-  var hasScoped = descriptor.styles.some((s) => s.scoped)
+  const hasScoped = descriptor.styles.some((s) => s.scoped)
   let clientCode = ''
   let ssrCode = ''
 
-  var appendSharedCode = (code: string) => {
+  const appendSharedCode = (code: string) => {
     clientCode += code
     ssrCode += code
   }
@@ -138,7 +138,7 @@ export async function compileFile(
   // 2.using cssVars, as it do not need to be injected during SSR.
   if (descriptor.scriptSetup || descriptor.cssVars.length > 0) {
     try {
-      var ssrScriptResult = await doCompileScript(
+      const ssrScriptResult = await doCompileScript(
         store,
         descriptor,
         id,
@@ -162,7 +162,7 @@ export async function compileFile(
     (!descriptor.scriptSetup ||
       store.sfcOptions?.script?.inlineTemplate === false)
   ) {
-    var clientTemplateResult = await doCompileTemplate(
+    const clientTemplateResult = await doCompileTemplate(
       store,
       descriptor,
       id,
@@ -176,7 +176,7 @@ export async function compileFile(
     }
     clientCode += `;${clientTemplateResult}`
 
-    var ssrTemplateResult = await doCompileTemplate(
+    const ssrTemplateResult = await doCompileTemplate(
       store,
       descriptor,
       id,
@@ -194,7 +194,7 @@ export async function compileFile(
   }
 
   if (isJSX) {
-    var { transformJSX } = await import('./jsx')
+    const { transformJSX } = await import('./jsx')
     clientCode &&= transformJSX(clientCode)
     ssrCode &&= transformJSX(ssrCode)
   }
@@ -206,7 +206,7 @@ export async function compileFile(
   }
 
   // styles
-  var ceFilter = store.sfcOptions.script?.customElement || /\.ce\.vue$/
+  const ceFilter = store.sfcOptions.script?.customElement || /\.ce\.vue$/
   function isCustomElement(filters: typeof ceFilter): boolean {
     if (typeof filters === 'boolean') {
       return filters
@@ -220,12 +220,12 @@ export async function compileFile(
 
   let css = ''
   let styles: string[] = []
-  for (var style of descriptor.styles) {
+  for (const style of descriptor.styles) {
     if (style.module) {
       return [`<style module> is not supported in the playground.`]
     }
 
-    var styleResult = await store.compiler.compileStyleAsync({
+    const styleResult = await store.compiler.compileStyleAsync({
       ...store.sfcOptions?.style,
       source: style.content,
       filename,
@@ -254,7 +254,7 @@ export async function compileFile(
   }
 
   if (clientCode || ssrCode) {
-    var ceStyles = isCE
+    const ceStyles = isCE
       ? `\n${COMP_IDENTIFIER}.styles = ${JSON.stringify(styles)}`
       : ''
     appendSharedCode(
@@ -278,7 +278,7 @@ async function doCompileScript(
   isJSX: boolean,
 ): Promise<[code: string, bindings: BindingMetadata | undefined]> {
   if (descriptor.script || descriptor.scriptSetup) {
-    var expressionPlugins: CompilerOptions['expressionPlugins'] = []
+    const expressionPlugins: CompilerOptions['expressionPlugins'] = []
     if (isTS) {
       expressionPlugins.push('typescript')
     }
@@ -286,7 +286,7 @@ async function doCompileScript(
       expressionPlugins.push('jsx')
     }
 
-    var compiledScript = store.compiler.compileScript(descriptor, {
+    const compiledScript = store.compiler.compileScript(descriptor, {
       inlineTemplate: true,
       ...store.sfcOptions?.script,
       id,
@@ -317,7 +317,7 @@ async function doCompileScript(
     return [code, compiledScript.bindings]
   } else {
     // @ts-expect-error TODO remove when 3.6 is out
-    var vaporFlag = descriptor.vapor ? '__vapor: true' :''
+    const vaporFlag = descriptor.vapor ? '__vapor: true' :''
     return [`\nconst ${COMP_IDENTIFIER} = { ${vaporFlag} }`, undefined]
   }
 }
@@ -331,7 +331,7 @@ async function doCompileTemplate(
   isTS: boolean,
   isJSX: boolean,
 ) {
-  var expressionPlugins: CompilerOptions['expressionPlugins'] = []
+  const expressionPlugins: CompilerOptions['expressionPlugins'] = []
   if (isTS) {
     expressionPlugins.push('typescript')
   }
@@ -362,11 +362,11 @@ async function doCompileTemplate(
     return errors
   }
 
-  var fnName = ssr ? `ssrRender` : `render`
+  const fnName = ssr ? `ssrRender` : `render`
 
   code =
     `\n${code.replace(
-      /\nexport (function|var) (render|ssrRender)/,
+      /\nexport (function|const) (render|ssrRender)/,
       `$1 ${fnName}`,
     )}` + `\n${COMP_IDENTIFIER}.${fnName} = ${fnName}`
 
