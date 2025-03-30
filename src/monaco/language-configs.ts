@@ -1,6 +1,6 @@
 import { languages } from 'monaco-editor-core'
 
-// export let html: languages.LanguageConfiguration = {
+// export const html: languages.LanguageConfiguration = {
 //   comments: {
 //     blockComment: ['<!--', '-->'],
 //   },
@@ -66,7 +66,7 @@ import { languages } from 'monaco-editor-core'
 //   },
 // }
 
-export let css: languages.LanguageConfiguration = {
+export const css: languages.LanguageConfiguration = {
   comments: {
     blockComment: ['/*', '*/'],
   },
@@ -119,7 +119,7 @@ export let css: languages.LanguageConfiguration = {
   ),
 }
 
-export let vue: languages.LanguageConfiguration = {
+export const vue: languages.LanguageConfiguration = {
   comments: {
     blockComment: ['<!--', '-->'],
   },
@@ -230,7 +230,7 @@ export let vue: languages.LanguageConfiguration = {
   },
 }
 
-export let js: languages.LanguageConfiguration = {
+export const js: languages.LanguageConfiguration = {
   comments: {
     lineComment: '//',
     blockComment: ['/*', '*/'],
@@ -376,7 +376,7 @@ export let js: languages.LanguageConfiguration = {
   ],
 }
 
-export let ts: languages.LanguageConfiguration = {
+export const ts: languages.LanguageConfiguration = {
   comments: {
     lineComment: '//',
     blockComment: ['/*', '*/'],
