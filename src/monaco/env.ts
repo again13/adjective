@@ -17,8 +17,8 @@ export function initMonaco(store: Store) {
 
   watchEffect(() => {
     // create a model for each file in the store
-    for (const filename in store.files) {
-      const file = store.files[filename]
+    for (var filename in store.files) {
+      var file = store.files[filename]
       if (editor.getModel(Uri.parse(`file:///${filename}`))) continue
       getOrCreateModel(
         Uri.parse(`file:///${filename}`),
@@ -28,8 +28,8 @@ export function initMonaco(store: Store) {
     }
 
     // dispose of any models that are not in the store
-    for (const model of editor.getModels()) {
-      const uri = model.uri.toString()
+    for (var model of editor.getModels()) {
+      var uri = model.uri.toString()
       if (store.files[uri.substring('file:///'.length)]) continue
 
       if (uri.startsWith('file:///node_modules')) continue
@@ -78,7 +78,7 @@ export async function reloadLanguageTools(store: Store) {
     }
   }
 
-  const worker = editor.createWebWorker<WorkerLanguageService>({
+  var worker = editor.createWebWorker<WorkerLanguageService>({
     moduleId: 'vs/language/vue/vueWorker',
     label: 'vue',
     host: new WorkerHost(),
@@ -87,24 +87,24 @@ export async function reloadLanguageTools(store: Store) {
       dependencies,
     } satisfies CreateData,
   })
-  const languageId = ['vue', 'javascript', 'typescript']
-  const getSyncUris = () =>
+  var languageId = ['vue', 'javascript', 'typescript']
+  var getSyncUris = () =>
     Object.keys(store.files).map((filename) => Uri.parse(`file:///${filename}`))
 
-  const { dispose: disposeMarkers } = volar.activateMarkers(
+  var { dispose: disposeMarkers } = volar.activateMarkers(
     worker,
     languageId,
     'vue',
     getSyncUris,
     editor,
   )
-  const { dispose: disposeAutoInsertion } = volar.activateAutoInsertion(
+  var { dispose: disposeAutoInsertion } = volar.activateAutoInsertion(
     worker,
     languageId,
     getSyncUris,
     editor,
   )
-  const { dispose: disposeProvides } = await volar.registerProviders(
+  var { dispose: disposeProvides } = await volar.registerProviders(
     worker,
     languageId,
     getSyncUris,
@@ -128,8 +128,8 @@ export function loadMonacoEnv(store: Store) {
   ;(self as any).MonacoEnvironment = {
     async getWorker(_: any, label: string) {
       if (label === 'vue') {
-        const worker = new vueWorker()
-        const init = new Promise<void>((resolve) => {
+        var worker = new vueWorker()
+        var init = new Promise<void>((resolve) => {
           worker.addEventListener('message', (data) => {
             if (data.data === 'inited') {
               resolve()
@@ -171,9 +171,9 @@ export function loadMonacoEnv(store: Store) {
         return true
       }
 
-      const path = resource.path
+      var path = resource.path
       if (/^\//.test(path)) {
-        const fileName = path.replace('/', '')
+        var fileName = path.replace('/', '')
         if (fileName !== store.activeFile.filename) {
           store.setActive(fileName)
           return true
