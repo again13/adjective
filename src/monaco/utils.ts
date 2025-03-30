@@ -5,7 +5,7 @@ export function getOrCreateModel(
   lang: string | undefined,
   value: string,
 ) {
-  let model = editor.getModel(uri)
+  const model = editor.getModel(uri)
   if (model) {
     model.setValue(value)
     return model
