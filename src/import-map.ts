@@ -13,10 +13,10 @@ export function useVueImportMap(
     return typeof defaults === 'string' ? defaults : defaults()
   }
 
-  const productionMode = ref(false)
-  const vueVersion = ref<string | null>(defaults.vueVersion || null)
-  const importMap = computed<ImportMap>(() => {
-    const vue =
+  let productionMode = ref(false)
+  let vueVersion = ref<string | null>(defaults.vueVersion || null)
+  let importMap = computed<ImportMap>(() => {
+    let vue =
       (!vueVersion.value &&
         normalizeDefaults(
           productionMode.value ? defaults.runtimeProd : defaults.runtimeDev,
@@ -25,7 +25,7 @@ export function useVueImportMap(
         vueVersion.value || currentVersion
       }/dist/runtime-dom.esm-browser${productionMode.value ? `.prod` : ``}.js`
 
-    const serverRenderer =
+    let serverRenderer =
       (!vueVersion.value && normalizeDefaults(defaults.serverRenderer)) ||
       `https://cdn.jsdelivr.net/npm/@vue/server-renderer@${
         vueVersion.value || currentVersion
