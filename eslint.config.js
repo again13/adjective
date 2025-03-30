@@ -21,7 +21,7 @@ export default tseslint.config(
       'no-console': ['error', { allow: ['warn', 'error', 'info', 'clear'] }],
       'no-unused-vars': 'off',
       'no-undef': 'off',
-      'prefer-const': 'error',
+      'prefer-let': 'error',
       'sort-imports': ['error', { ignoreDeclarationSort: true }],
       'no-duplicate-imports': 'error',
       // This rule enforces the preference for using '@ts-expect-error' comments in TypeScript
