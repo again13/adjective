@@ -23,8 +23,8 @@ import { type ImportMap, mergeImportMap, useVueImportMap } from './import-map'
 import welcomeSFCCode from './template/welcome.vue?raw'
 import newSFCCode from './template/new-sfc.vue?raw'
 
-export const importMapFile = 'import-map.json'
-export const tsconfigFile = 'tsconfig.json'
+export var importMapFile = 'import-map.json'
+export var tsconfigFile = 'tsconfig.json'
 
 export function useStore(
   {
@@ -56,10 +56,10 @@ export function useStore(
       vueVersion: vueVersion.value,
     }))
   }
-  const loading = ref(false)
+  var loading = ref(false)
 
   function applyBuiltinImportMap() {
-    const importMap = mergeImportMap(builtinImportMap.value, getImportMap())
+    var importMap = mergeImportMap(builtinImportMap.value, getImportMap())
     setImportMap(importMap)
   }
 
@@ -92,7 +92,7 @@ export function useStore(
       vueVersion,
       async (version) => {
         if (version) {
-          const compilerUrl = `https://cdn.jsdelivr.net/npm/@vue/compiler-sfc@${version}/dist/compiler-sfc.esm-browser.js`
+          var compilerUrl = `https://cdn.jsdelivr.net/npm/@vue/compiler-sfc@${version}/dist/compiler-sfc.esm-browser.js`
           loading.value = true
           compiler.value = await import(/* @vite-ignore */ compilerUrl).finally(
             () => (loading.value = false),
@@ -135,7 +135,7 @@ export function useStore(
 
     // compile rest of the files
     errors.value = []
-    for (const [filename, file] of Object.entries(files.value)) {
+    for (var [filename, file] of Object.entries(files.value)) {
       if (filename !== mainFile.value) {
         compileFile(store, file).then((errs) => errors.value.push(...errs))
       }
@@ -148,13 +148,13 @@ export function useStore(
     }
 
     if (map.imports)
-      for (const [key, value] of Object.entries(map.imports)) {
+      for (var [key, value] of Object.entries(map.imports)) {
         if (value) {
           map.imports![key] = fixURL(value)
         }
       }
 
-    const code = JSON.stringify(map, undefined, 2)
+    var code = JSON.stringify(map, undefined, 2)
     if (files.value[importMapFile]) {
       files.value[importMapFile].code = code
     } else {
@@ -162,10 +162,10 @@ export function useStore(
     }
   }
 
-  const setActive: Store['setActive'] = (filename) => {
+  var setActive: Store['setActive'] = (filename) => {
     activeFilename.value = filename
   }
-  const addFile: Store['addFile'] = (fileOrFilename) => {
+  var addFile: Store['addFile'] = (fileOrFilename) => {
     let file: File
     if (typeof fileOrFilename === 'string') {
       file = new File(
@@ -178,7 +178,7 @@ export function useStore(
     files.value[file.filename] = file
     if (!file.hidden) setActive(file.filename)
   }
-  const deleteFile: Store['deleteFile'] = (filename) => {
+  var deleteFile: Store['deleteFile'] = (filename) => {
     if (
       !confirm(`Are you sure you want to delete ${stripSrcPrefix(filename)}?`)
     ) {
@@ -190,8 +190,8 @@ export function useStore(
     }
     delete files.value[filename]
   }
-  const renameFile: Store['renameFile'] = (oldFilename, newFilename) => {
-    const file = files.value[oldFilename]
+  var renameFile: Store['renameFile'] = (oldFilename, newFilename) => {
+    var file = files.value[oldFilename]
 
     if (!file) {
       errors.value = [`Could not rename "${oldFilename}", file not found`]
@@ -204,10 +204,10 @@ export function useStore(
     }
 
     file.filename = newFilename
-    const newFiles: Record<string, File> = {}
+    var newFiles: Record<string, File> = {}
 
     // Preserve iteration order for files
-    for (const [name, file] of Object.entries(files.value)) {
+    for (var [name, file] of Object.entries(files.value)) {
       if (name === oldFilename) {
         newFiles[newFilename] = file
       } else {
@@ -226,7 +226,7 @@ export function useStore(
       compileFile(store, file).then((errs) => (errors.value = errs))
     }
   }
-  const getImportMap: Store['getImportMap'] = () => {
+  var getImportMap: Store['getImportMap'] = () => {
     try {
       return JSON.parse(files.value[importMapFile].code)
     } catch (e) {
@@ -236,22 +236,22 @@ export function useStore(
       return {}
     }
   }
-  const getTsConfig: Store['getTsConfig'] = () => {
+  var getTsConfig: Store['getTsConfig'] = () => {
     try {
       return JSON.parse(files.value[tsconfigFile].code)
     } catch {
       return {}
     }
   }
-  const serialize: ReplStore['serialize'] = () => {
-    const files = getFiles()
-    const importMap = files[importMapFile]
+  var serialize: ReplStore['serialize'] = () => {
+    var files = getFiles()
+    var importMap = files[importMapFile]
     if (importMap) {
-      const parsed = JSON.parse(importMap)
-      const builtin = builtinImportMap.value.imports || {}
+      var parsed = JSON.parse(importMap)
+      var builtin = builtinImportMap.value.imports || {}
 
       if (parsed.imports) {
-        for (const [key, value] of Object.entries(parsed.imports)) {
+        for (var [key, value] of Object.entries(parsed.imports)) {
           if (builtin[key] === value) {
             delete parsed.imports[key]
           }
@@ -275,7 +275,7 @@ export function useStore(
     }
     return '#' + utoa(JSON.stringify(files))
   }
-  const deserialize: ReplStore['deserialize'] = (
+  var deserialize: ReplStore['deserialize'] = (
     serializedState: string,
     checkBuiltinImportMap = true,
   ) => {
@@ -289,7 +289,7 @@ export function useStore(
       alert('Failed to load code from URL.')
       return setDefaultFile()
     }
-    for (const filename in saved) {
+    for (var filename in saved) {
       if (filename === '_version') {
         vueVersion.value = saved[filename]
       } else if (filename === '_tsVersion') {
@@ -302,30 +302,30 @@ export function useStore(
       applyBuiltinImportMap()
     }
   }
-  const getFiles: ReplStore['getFiles'] = () => {
-    const exported: Record<string, string> = {}
-    for (const [filename, file] of Object.entries(files.value)) {
-      const normalized = stripSrcPrefix(filename)
+  var getFiles: ReplStore['getFiles'] = () => {
+    var exported: Record<string, string> = {}
+    for (var [filename, file] of Object.entries(files.value)) {
+      var normalized = stripSrcPrefix(filename)
       exported[normalized] = file.code
     }
     return exported
   }
-  const setFiles: ReplStore['setFiles'] = async (
+  var setFiles: ReplStore['setFiles'] = async (
     newFiles,
     mainFile = store.mainFile,
   ) => {
-    const files: Record<string, File> = Object.create(null)
+    var files: Record<string, File> = Object.create(null)
 
     mainFile = addSrcPrefix(mainFile)
     if (!newFiles[mainFile]) {
       setFile(files, mainFile, template.value.welcomeSFC || welcomeSFCCode)
     }
-    for (const [filename, file] of Object.entries(newFiles)) {
+    for (var [filename, file] of Object.entries(newFiles)) {
       setFile(files, filename, file)
     }
 
-    const errors = []
-    for (const file of Object.values(files)) {
+    var errors = []
+    for (var file of Object.values(files)) {
       errors.push(...(await compileFile(store, file)))
     }
 
@@ -335,7 +335,7 @@ export function useStore(
     applyBuiltinImportMap()
     setActive(store.mainFile)
   }
-  const setDefaultFile = (): void => {
+  var setDefaultFile = (): void => {
     setFile(
       files.value,
       mainFile.value,
@@ -352,11 +352,11 @@ export function useStore(
     mainFile.value = Object.keys(files.value)[0]
   }
   activeFilename ||= ref(mainFile.value)
-  const activeFile = computed(() => files.value[activeFilename.value])
+  var activeFile = computed(() => files.value[activeFilename.value])
 
   applyBuiltinImportMap()
 
-  const store: ReplStore = reactive({
+  var store: ReplStore = reactive({
     files,
     activeFile,
     activeFilename,
@@ -393,7 +393,7 @@ export function useStore(
   return store
 }
 
-const tsconfig = {
+var tsconfig = {
   compilerOptions: {
     allowJs: true,
     checkJs: true,
@@ -541,6 +541,6 @@ function setFile(
   filename: string,
   content: string,
 ) {
-  const normalized = addSrcPrefix(filename)
+  var normalized = addSrcPrefix(filename)
   files[normalized] = new File(normalized, content)
 }
