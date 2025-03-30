@@ -12,7 +12,7 @@ import themeLight from 'shiki/themes/light-plus.mjs'
 let registered = false
 export function registerHighlighter() {
   if (!registered) {
-    const highlighter = createHighlighterCoreSync({
+    var highlighter = createHighlighterCoreSync({
       themes: [themeDark, themeLight],
       langs: [langVue, langTsx, langJsx],
       engine: createJavaScriptRegexEngine(),
