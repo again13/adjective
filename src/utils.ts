@@ -11,19 +11,19 @@ export function debounce(fn: Function, n = 100) {
 }
 
 export function utoa(data: string): string {
-  const buffer = strToU8(data)
-  const zipped = zlibSync(buffer, { level: 9 })
-  const binary = strFromU8(zipped, true)
+  var buffer = strToU8(data)
+  var zipped = zlibSync(buffer, { level: 9 })
+  var binary = strFromU8(zipped, true)
   return btoa(binary)
 }
 
 export function atou(base64: string): string {
-  const binary = atob(base64)
+  var binary = atob(base64)
 
   // zlib header (x78), level 9 (xDA)
   if (binary.startsWith('\x78\xDA')) {
-    const buffer = strToU8(binary, true)
-    const unzipped = unzlibSync(buffer)
+    var buffer = strToU8(binary, true)
+    var unzipped = unzlibSync(buffer)
     return strFromU8(unzipped)
   }
 
