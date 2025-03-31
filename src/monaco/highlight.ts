@@ -9,7 +9,7 @@ import langJsx from 'shiki/langs/jsx.mjs'
 import themeDark from 'shiki/themes/dark-plus.mjs'
 import themeLight from 'shiki/themes/light-plus.mjs'
 
-const registered = false
+let registered = false
 export function registerHighlighter() {
   if (!registered) {
     var highlighter = createHighlighterCoreSync({
