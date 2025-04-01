@@ -6,13 +6,13 @@ import MonacoEditor from '../src/editor/MonacoEditor.vue'
 // @ts-ignore
 import CodeMirrorEditor from '../src/editor/CodeMirrorEditor.vue'
 
-let window = globalThis.window as any
+const window = globalThis.window as any
 window.process = { env: {} }
 
-let App = {
+const App = {
   setup() {
-    let query = new URLSearchParams(location.search)
-    let { importMap: builtinImportMap, vueVersion } = useVueImportMap({
+    const query = new URLSearchParams(location.search)
+    const { importMap: builtinImportMap, vueVersion } = useVueImportMap({
       runtimeDev: import.meta.env.PROD
         ? undefined
         : `${location.origin}/src/vue-dev-proxy`,
@@ -20,7 +20,7 @@ let App = {
         ? undefined
         : `${location.origin}/src/vue-server-renderer-dev-proxy`,
     })
-    let store = (window.store = useStore(
+    const store = (window.store = useStore(
       {
         builtinImportMap,
         vueVersion,
@@ -47,9 +47,9 @@ let App = {
     // }, 1000)
 
     // store.vueVersion = '3.4.1'
-    let theme = ref<'light' | 'dark'>('dark')
+    const theme = ref<'light' | 'dark'>('dark')
     window.theme = theme
-    let previewTheme = ref(false)
+    const previewTheme = ref(false)
     window.previewTheme = previewTheme
 
     return () =>
