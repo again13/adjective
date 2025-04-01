@@ -2,6 +2,6 @@
 
 declare module '*.vue' {
   import type { ComponentOptions } from 'vue'
-  const comp: ComponentOptions
+  let comp: ComponentOptions
   export default comp
 }
